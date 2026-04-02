@@ -36,9 +36,4 @@ def main():
         print(f"Hasil sorting descending: {result}")
     
     else:
-        print("Tipe sorting tidak valid! Gunakan 'ascending' atau 'descending'")
-
-
-# Jalankan program
-if __name__ == "__main__":
-    main()
+        print("Tipe sorting tidak valid! Gunakan 'ascending' atau 'descending'")
