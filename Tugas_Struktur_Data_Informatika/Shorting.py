@@ -1,39 +1,69 @@
-def main():
-    # Input data angka (pisahkan dengan spasi)
-    input_data_number = input("Masukan data angka (pisahkan dengan spasi): ")
+def bubble_sort(arr, order='ascending'):
+    """
+    Fungsi Bubble Sort dengan pilihan ascending atau descending
+    """
+    n = len(arr)
+    arr_copy = arr.copy()
+    iterations = []
     
-    # Input tipe sorting
-    input_type_sort = input("Masukan tipe sorting (ascending atau descending): ").lower().strip()
+    print(f"Array awal: {arr_copy}")
+    print(f"Mode sorting: {order}")
+    print("=" * 50)
     
-    # Konversi string ke list integer
-    datas = input_data_number.split()
-    numbers = [int(num) for num in datas]
-    
-    print(numbers, "\n")
-    
-    # Bubble Sort Ascending
-    if input_type_sort == "ascending":
-        for i in range(len(numbers)):
-            for j in range(len(numbers) - 1):
-                prev_number = numbers[j]
-                if prev_number >= numbers[j + 1]:
-                    numbers[j] = numbers[j + 1]
-                    numbers[j + 1] = prev_number
+    for i in range(n):
+        swapped = False
+        print(f"\n--- Iterasi {i + 1} ---")
         
-        result = numbers
-        print(f"Hasil sorting ascending: {result}")
-    
-    # Bubble Sort Descending
-    elif input_type_sort == "descending":
-        for i in range(len(numbers)):
-            for j in range(len(numbers) - 1):
-                next_number = numbers[j + 1]
-                if next_number >= numbers[j]:
-                    numbers[j + 1] = numbers[j]
-                    numbers[j] = next_number
+        for j in range(0, n - i - 1):
+            if order == 'ascending':
+                condition = arr_copy[j] > arr_copy[j + 1]
+                comparison = f"{arr_copy[j]} > {arr_copy[j + 1]}"
+            else:
+                condition = arr_copy[j] < arr_copy[j + 1]
+                comparison = f"{arr_copy[j]} < {arr_copy[j + 1]}"
+            
+            print(f"  Bandingkan: {comparison} ? {condition}")
+            
+            if condition:
+                arr_copy[j], arr_copy[j + 1] = arr_copy[j + 1], arr_copy[j]
+                swapped = True
+                print(f"  -> TUKAR! Array menjadi: {arr_copy}")
+            else:
+                print(f"  -> Tidak tukar. Array tetap: {arr_copy}")
         
-        result = numbers
-        print(f"Hasil sorting descending: {result}")
+        iterations.append(arr_copy.copy())
+        print(f"Hasil akhir iterasi {i + 1}: {arr_copy}")
+        if not swapped:
+            print(f"\nTidak ada pertukaran pada iterasi {i + 1}. Array sudah terurut!")
+            break
     
-    else:
-        print("Tipe sorting tidak valid! Gunakan 'ascending' atau 'descending'")
+    return arr_copy, iterations
+data = [8, 10, 30, 0, -4, 3]
+
+print("=" * 60)
+print("PROGRAM SORTING ARRAY - BUBBLE SORT")
+print("=" * 60)
+print(f"Data: {data}")
+print()
+print("Pilihan:")
+print("1. Ascending (kecil ke besar)")
+print("2. Descending (besar ke kecil)")
+print()
+print("\n" + "=" * 60)
+print("PERHITUNGAN MANUAL - ASCENDING ORDER")
+print("=" * 60)
+result_asc, iter_asc = bubble_sort(data, 'ascending')
+
+print("\n" + "=" * 60)
+print("HASIL AKHIR ASCENDING:")
+print(f"Array terurut: {result_asc}")
+print("=" * 60)
+print("\n" + "=" * 60)
+print("PERHITUNGAN MANUAL - DESCENDING ORDER")
+print("=" * 60)
+result_desc, iter_desc = bubble_sort(data, 'descending')
+
+print("\n" + "=" * 60)
+print("HASIL AKHIR DESCENDING:")
+print(f"Array terurut: {result_desc}")
+print("=" * 60)
