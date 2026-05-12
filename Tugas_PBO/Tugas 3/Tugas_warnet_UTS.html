@@ -1,0 +1,552 @@
+
+# Membuat file HTML struk warnet interaktif
+struk_warnet_html = '''<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struk Warnet - CyberNet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .form-card {
+            grid-column: 1;
+        }
+        
+        .receipt-card {
+            grid-column: 2;
+            display: none;
+        }
+        
+        .receipt-card.active {
+            display: block;
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .member-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .member-toggle:hover {
+            background: #e9ecef;
+        }
+        
+        .member-toggle input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .member-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #ffd700;
+            color: #333;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .receipt {
+            background: #fff;
+            padding: 0;
+        }
+        
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #333;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .receipt-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .receipt-header p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .receipt-body {
+            font-size: 0.9rem;
+        }
+        
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+        
+        .receipt-row.discount {
+            color: #28a745;
+        }
+        
+        .receipt-row.total {
+            border-top: 2px solid #333;
+            border-bottom: 2px solid #333;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 12px 0;
+            margin-top: 10px;
+        }
+        
+        .receipt-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px dashed #333;
+        }
+        
+        .receipt-footer p {
+            font-size: 0.8rem;
+            color: #666;
+            margin: 3px 0;
+        }
+        
+        .thank-you {
+            font-size: 1rem !important;
+            color: #333 !important;
+            font-weight: 600;
+            margin-top: 10px !important;
+        }
+        
+        .member-star {
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+        
+        .btn-print {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            margin-top: 15px;
+        }
+        
+        .btn-new {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin-top: 10px;
+        }
+        
+        .history-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .history-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-item .time {
+            color: #666;
+            font-size: 0.75rem;
+        }
+        
+        .price-tag {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card form-card">
+            <div class="logo">
+                <div class="logo-icon">🖥️</div>
+                <h2>CyberNet Warnet</h2>
+                <p style="color: #666; font-size: 0.9rem;">Sistem Struk Digital</p>
+            </div>
+            
+            <form id="warnetForm">
+                <div class="form-group">
+                    <label for="operator">👤 Nama Operator</label>
+                    <input type="text" id="operator" placeholder="Masukkan nama operator" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customer">👤 Nama Pelanggan</label>
+                    <input type="text" id="customer" placeholder="Masukkan nama pelanggan" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pcNumber">💻 Nomor PC</label>
+                    <select id="pcNumber" required>
+                        <option value="">Pilih Nomor PC</option>
+                        <option value="PC-01">PC-01</option>
+                        <option value="PC-02">PC-02</option>
+                        <option value="PC-03">PC-03</option>
+                        <option value="PC-04">PC-04</option>
+                        <option value="PC-05">PC-05</option>
+                        <option value="PC-06">PC-06</option>
+                        <option value="PC-07">PC-07</option>
+                        <option value="PC-08">PC-08</option>
+                        <option value="PC-09">PC-09</option>
+                        <option value="PC-10">PC-10</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="duration">⏱️ Durasi (Jam)</label>
+                    <input type="number" id="duration" min="0.5" max="24" step="0.5" placeholder="Contoh: 2.5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>🎯 Status Member</label>
+                    <label class="member-toggle">
+                        <input type="checkbox" id="isMember">
+                        <span>Daftarkan sebagai Member (Diskon 10%)</span>
+                    </label>
+                </div>
+                
+                <button type="submit">🖨️ Cetak Struk</button>
+            </form>
+            
+            <div class="history-section">
+                <h3 style="font-size: 1rem; margin-bottom: 12px; color: #555;">📋 Riwayat Transaksi Hari Ini</h3>
+                <div id="historyList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>Belum ada transaksi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card receipt-card" id="receiptCard">
+            <div class="receipt" id="receiptContent">
+                <div class="receipt-header">
+                    <div style="font-size: 2rem; margin-bottom: 5px;">🖥️</div>
+                    <h3>CYBERNET WARNET</h3>
+                    <p>Jl. Teknologi No. 123, Kota Digital</p>
+                    <p>Telp: 0812-3456-7890</p>
+                </div>
+                
+                <div class="receipt-body">
+                    <div class="receipt-row">
+                        <span>No. Struk</span>
+                        <span id="receiptNo">-</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Tanggal</span>
+                        <span id="receiptDate">-</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Operator</span>
+                        <span id="receiptOperator">-</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Pelanggan</span>
+                        <span id="receiptCustomer">-</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Nomor PC</span>
+                        <span id="receiptPC">-</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Durasi</span>
+                        <span id="receiptDuration">-</span>
+                    </div>
+                    
+                    <div style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
+                    
+                    <div class="receipt-row">
+                        <span>Harga per Jam</span>
+                        <span id="receiptPricePerHour">Rp 5.000</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Subtotal</span>
+                        <span id="receiptSubtotal">-</span>
+                    </div>
+                    <div class="receipt-row discount" id="discountRow" style="display: none;">
+                        <span>Diskon Member (10%) <span class="member-star">⭐</span></span>
+                        <span id="receiptDiscount">-</span>
+                    </div>
+                    <div class="receipt-row total">
+                        <span>TOTAL BAYAR</span>
+                        <span id="receiptTotal">-</span>
+                    </div>
+                    
+                    <div id="memberBadge" style="display: none; text-align: center; margin-top: 10px;">
+                        <span class="member-badge">⭐ MEMBER</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-footer">
+                    <p>Terima kasih telah berkunjung</p>
+                    <p class="thank-you">Selamat Bermain! 🎮</p>
+                    <p style="margin-top: 10px; font-size: 0.7rem;">--- Simpan struk ini ---</p>
+                </div>
+            </div>
+            
+            <button class="btn-print" onclick="printReceipt()">🖨️ Print Struk</button>
+            <button class="btn-new" onclick="newTransaction()">🔄 Transaksi Baru</button>
+        </div>
+    </div>
+    
+    <script>
+        const HARGA_PER_JAM = 5000;
+        let transactionHistory = [];
+        let receiptCounter = 1;
+        
+        document.getElementById('warnetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateReceipt();
+        });
+        
+        function formatRupiah(angka) {
+            return 'Rp ' + angka.toLocaleString('id-ID');
+        }
+        
+        function generateReceipt() {
+            const operator = document.getElementById('operator').value;
+            const customer = document.getElementById('customer').value;
+            const pcNumber = document.getElementById('pcNumber').value;
+            const duration = parseFloat(document.getElementById('duration').value);
+            const isMember = document.getElementById('isMember').checked;
+            
+            const subtotal = duration * HARGA_PER_JAM;
+            const discount = isMember ? subtotal * 0.10 : 0;
+            const total = subtotal - discount;
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { 
+                day: '2-digit', 
+                month: 'long', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const receiptNo = 'TRX-' + String(receiptCounter).padStart(4, '0');
+            receiptCounter++;
+
+            document.getElementById('receiptNo').textContent = receiptNo;
+            document.getElementById('receiptDate').textContent = dateStr;
+            document.getElementById('receiptOperator').textContent = operator;
+            document.getElementById('receiptCustomer').textContent = customer;
+            document.getElementById('receiptPC').textContent = pcNumber;
+            document.getElementById('receiptDuration').textContent = duration + ' jam';
+            document.getElementById('receiptSubtotal').textContent = formatRupiah(subtotal);
+            document.getElementById('receiptTotal').textContent = formatRupiah(total);
+
+            const discountRow = document.getElementById('discountRow');
+            const memberBadge = document.getElementById('memberBadge');
+            
+            if (isMember) {
+                document.getElementById('receiptDiscount').textContent = '- ' + formatRupiah(discount);
+                discountRow.style.display = 'flex';
+                memberBadge.style.display = 'block';
+            } else {
+                discountRow.style.display = 'none';
+                memberBadge.style.display = 'none';
+            }
+
+            document.getElementById('receiptCard').classList.add('active');
+
+            const historyItem = {
+                receiptNo: receiptNo,
+                customer: customer,
+                pcNumber: pcNumber,
+                duration: duration,
+                total: total,
+                isMember: isMember,
+                time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+            };
+            transactionHistory.unshift(historyItem);
+            updateHistory();
+            
+          if (window.innerWidth <= 768) {
+                document.getElementById('receiptCard').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        function updateHistory() {
+            const historyList = document.getElementById('historyList');
+            
+            if (transactionHistory.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>Belum ada transaksi</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            historyList.innerHTML = transactionHistory.map(item => `
+                <div class="history-item">
+                    <div>
+                        <strong>${item.customer}</strong> ${item.isMember ? '<span class="member-star">⭐</span>' : ''}<br>
+                        <span class="time">${item.pcNumber} • ${item.duration} jam • ${item.time}</span>
+                    </div>
+                    <div class="price-tag">${formatRupiah(item.total)}</div>
+                </div>
+            `).join('');
+        }
+        
+        function printReceipt() {
+            const receiptContent = document.getElementById('receiptContent').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Struk Warnet</title>
+                    <style>
+                        body { font-family: 'Courier New', monospace; padding: 20px; }
+                        .receipt-header { text-align: center; border-bottom: 2px dashed #333; padding-bottom: 15px; margin-bottom: 15px; }
+                        .receipt-row { display: flex; justify-content: space-between; padding: 5px 0; }
+                        .receipt-row.total { border-top: 2px solid #333; border-bottom: 2px solid #333; font-weight: bold; margin-top: 10px; padding: 10px 0; }
+                        .receipt-footer { text-align: center; margin-top: 20px; border-top: 2px dashed #333; padding-top: 15px; }
+                        .member-badge { background: #ffd700; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; }
+                        @media print { body { width: 80mm; margin: 0 auto; } }
+                    </style>
+                </head>
+                <body>
+                    ${receiptContent}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        function newTransaction() {
+            document.getElementById('warnetForm').reset();
+            document.getElementById('receiptCard').classList.remove('active');
+            document.getElementById('operator').focus();
+        }
+    </script>
+</body>
+</html>
+'''
+
+# Simpan file
+output_path = '/mnt/agents/output/struk_warnet.html'
+with open(output_path, 'w', encoding='utf-8') as f:
+    f.write(struk_warnet_html)
+
+print("File berhasil dibuat!")
+print(f"Lokasi: {output_path}")
