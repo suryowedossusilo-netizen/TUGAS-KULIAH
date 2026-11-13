@@ -1,0 +1,89 @@
+import math
+import time
+
+
+def input_data_lokasi():
+    lokasi = {}
+    print("=== INPUT DATA LOKASI TSP (METODE NEAREST NEIGHBOR / GREEDY) ===")
+    while True:
+        try:
+            jumlah = int(input("Masukkan jumlah titik/kota (minimal 3): "))
+            if jumlah >= 3:
+                break
+            print("Jumlah titik minimal 3 agar membentuk rute tertutup.")
+        except ValueError:
+            print("Input tidak valid. Masukkan angka bulat.")
+
+    for i in range(jumlah):
+        while True:
+            nama = (
+                input(f"\nNama titik ke-{i+1} (contoh: A): ").strip().upper()
+            )
+            if not nama:
+                print("Nama titik tidak boleh kosong.")
+            elif nama in lokasi:
+                print(f"Titik '{nama}' sudah ada. Gunakan nama lain.")
+            else:
+                break
+
+        while True:
+            try:
+                x = float(input(f"Koordinat X untuk {nama}: "))
+                y = float(input(f"Koordinat Y untuk {nama}: "))
+                lokasi[nama] = (x, y)
+                break
+            except ValueError:
+                print("Koordinat harus berupa angka.")
+
+    while True:
+        awal = (
+            input(f"\nPilih titik awal dari {list(lokasi.keys())}: ")
+            .strip()
+            .upper()
+        )
+        if awal in lokasi:
+            break
+        print("Titik awal tidak ditemukan dalam daftar lokasi.")
+
+    return lokasi, awal
+
+
+def jarak(lokasi, p, q):
+    return math.hypot(
+        lokasi[p][0] - lokasi[q][0], lokasi[p][1] - lokasi[q][1]
+    )
+
+
+def greedy_nearest_neighbor(lokasi, awal):
+    mulai_waktu = time.perf_counter()
+
+    belum = set(lokasi) - {awal}
+    rute = [awal]
+    total = 0.0
+    posisi = awal
+
+    while belum:
+        berikutnya = min(belum, key=lambda t: jarak(lokasi, posisi, t))
+        total += jarak(lokasi, posisi, berikutnya)
+        rute.append(berikutnya)
+        belum.remove(berikutnya)
+        posisi = berikutnya
+
+    total += jarak(lokasi, posisi, awal)  # kembali ke titik awal
+    rute.append(awal)
+
+    durasi = (time.perf_counter() - mulai_waktu) * 1000  # dalam milidetik
+    return rute, total, durasi
+
+
+if __name__ == "__main__":
+    lokasi, awal = input_data_lokasi()
+    rute, total, waktu = greedy_nearest_neighbor(lokasi, awal)
+
+    print("\n" + "=" * 50)
+    print("HASIL PENCARIAN RUTE (NEAREST NEIGHBOR / GREEDY)")
+    print("=" * 50)
+    print(f"Rute akhir     : {' -> '.join(rute)}")
+    print(f"Total jarak    : {total:.2f}")
+    print(f"Waktu eksekusi : {waktu:.4f} ms")
+    print("=" * 50)
